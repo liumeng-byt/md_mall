@@ -3,6 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>测试页面</title>
+    <script type="text/javascript" src="/static/js/axios-0.18.0.min.js"></script>
+    <script type="text/javascript">
+        let url = 'http://127.0.0.1:8000/test2/';
+        axios.get(url)
+            .then(function (response) {
+                alert(response.data.message)
+            })
+            .catch(function (error) {
+                alert('状态码：'+ error.response.status)
+            });
+        axios.post(url)
+            .then(function (response) {
+                alert(response.data.message)
+            })
+            .catch(function (response) {
+                alert(error.response.data.message);
+                alert('状态码：'+ error.response.status)
+            })
+    </script>
+
+
 </head>
 <body>
     <ｈ1> 测试页面　</ｈ1>
