@@ -9,9 +9,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 # test1/
-from meiduo_mall.meiduo_mall.utils.exceptions import logger
-
-
 class TestView(View):
     def get(self,request):
         return render(request,'test.html')
