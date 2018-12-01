@@ -5,13 +5,17 @@ from django.views import View
 # 添加测试类，返回　test.html
 from django_redis import get_redis_connection
 from rest_framework.exceptions import ValidationError
+from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-# test1/
+
 from users.models import User
+from users.serializers import CreateUserSerializer
 
 
+
+# test1/
 class TestView(View):
     def get(self,request):
         return render(request,'test.html')
@@ -80,3 +84,6 @@ class UsernameCountView(APIView):
             "count":count
         }
         return Response(data)
+
+class CreateUserView(CreateAPIView):
+    serializer_class = CreateUserSerializer

@@ -10,6 +10,9 @@ urlpatterns = [
     url(r'^test2/$', views.TestView2.as_view()),
 
     # 判断用户名是否存在
-    url(r'^usernames/(?P<username>\w{3,20})/count/$', UsernameCountView.as_view())
+    url(r'^usernames/(?P<username>\w{3,20})/count/$', UsernameCountView.as_view()),
+
+    # 注册用户
+    url(r'^users/$',views.CreateUserView.as_view())
 
 ]

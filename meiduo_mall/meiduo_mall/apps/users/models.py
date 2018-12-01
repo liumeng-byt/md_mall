@@ -9,4 +9,4 @@ class User(AbstractUser):
     class Meta:
         db_table = 'tb_users'
         verbose_name = '用户'
-        verbose_name_plural = verbose_name
+        verbose_name_plural = verbose_name # 复数
