@@ -9,6 +9,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 # test1/
+from users.models import User
+
+
 class TestView(View):
     def get(self,request):
         return render(request,'test.html')
@@ -68,3 +71,12 @@ error.response.data.non_field_errors[0]
 """
 
 
+class UsernameCountView(APIView):
+    def get(self,request,username):
+        count = User.objects.filter(username=username).count()
+        print(count)
+        data = {
+            "username":username,
+            "count":count
+        }
+        return Response(data)

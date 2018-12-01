@@ -25,7 +25,8 @@ SECRET_KEY = 'hf354&@8#s)2$c38_oj0bd!5^gxa=9!*7v*(-d*ma*&70ufy++'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# 指定可以通过哪些主机(ip,域名)访问后台服务器(django应用，django视图)
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'api.meiduo.site']
 
 # import sys
 # sys.path.append('/home/python/code/gz07/meiduo/meiduo_mall/meiduo_mall/apps')
@@ -40,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'corsheaders',
     # 'meiduo_mall.apps.users.apps.UsersConfig',
     'users', # 添加了导包路径后，只需要写ｕｓｅｒｓ
     'rest_framework', # 注册 django rest framwork 框架应用
@@ -47,6 +50,7 @@ INSTALLED_APPS = [
 #     'django.contrib.auth',   # 用户认证模块
 ]
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -221,9 +225,19 @@ LOGGING = {
 # DRF相关配置
 REST_FRAMEWORK = {
     # 异常处理
-    'EXCEPTION_HANDLER': 'meiduo_mall.meiduo_mall.utils.exceptions.custom_exception_handler',
+    # 'EXCEPTION_HANDLER': 'meiduo_mall.meiduo_mall.utils.exceptions.custom_exception_handler',
 }
 
 # 在项目配置文件中，指定使用自定义的用户模型类
 # AUTH_USER_MODEL = 'users.modeles.User' # 错误的写法
 AUTH_USER_MODEL = 'users.User'
+
+# 允许跨域访问
+CORS_ORIGIN_WHITELIST = (
+    '127.0.0.1:8080',
+    'localhost:8080',
+    'www.meiduo.site:8080',
+    'api.meiduo.site:8000'
+)
+# 指定在跨域访问中，后台是否支持cookie操作
+CORS_ALLOW_CREDENTIALS = True
