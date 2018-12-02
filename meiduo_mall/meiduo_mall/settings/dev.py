@@ -224,8 +224,21 @@ LOGGING = {
 # 建议：项目开发完成再添加进来
 # DRF相关配置
 REST_FRAMEWORK = {
-    # 异常处理
-    # 'EXCEPTION_HANDLER': 'meiduo_mall.meiduo_mall.utils.exceptions.custom_exception_handler',
+#     # 异常处理
+#     # 'EXCEPTION_HANDLER': 'meiduo_mall.meiduo_mall.utils.exceptions.custom_exception_handler',
+        'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',# jwt认证
+        'rest_framework.authentication.SessionAuthentication',# 管理后台使用
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}
+# jwt认证配置
+import datetime
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),# jwt有效时间
+
+    # 修改登录成功接口返回的响应参数， 新增 user_id 和 username两个字段(设置之后就不再用源码里的默认返回,而是用这里的)
+    'JWT_RESPONSE_PAYLOAD_HANDLER':'users.utils.jwt_response_payload_handler',
 }
 
 # 在项目配置文件中，指定使用自定义的用户模型类
@@ -241,3 +254,8 @@ CORS_ORIGIN_WHITELIST = (
 )
 # 指定在跨域访问中，后台是否支持cookie操作
 CORS_ALLOW_CREDENTIALS = True
+
+# 扩展登录接口: 手机号也可以登陆, 配置之后就不在使用源码里的默认的只能用户名登陆的方式了
+AUTHENTICATION_BACKENDS = [
+    'users.utils.UsernameMobileAuthBackend',
+]
