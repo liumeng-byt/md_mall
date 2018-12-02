@@ -257,3 +257,8 @@ CORS_ALLOW_CREDENTIALS = True
 AUTHENTICATION_BACKENDS = [
     'users.utils.UsernameMobileAuthBackend',
 ]
+
+# 已经审核通过的应用参数， 配置到setting文件中
+QQ_CLIENT_ID = '101474184'									# APP ID
+QQ_CLIENT_SECRET = 'c6ce949e04e12ecc909ae6a8b09b637c'		# APP Key
+QQ_REDIRECT_URI = 'http://www.meiduo.site:8080/oauth_callback.html' # 登录成功的回调地址
