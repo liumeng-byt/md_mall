@@ -24,5 +24,5 @@ urlpatterns = [
     # url(r'^authorizations/$',obtain_jwt_token) # 直接调用jwt里的登陆视图,但是只返回token一个值
 
     # 登录接口(使用jwt的视图),因为只返回token一个值,所以需要自定义视图函数返回token,user_id,username
-    url(r'authorizations/',MyObtainJSONWebToken.as_view()),
+    url(r'authorizations/$',MyObtainJSONWebToken.as_view()),
 ]

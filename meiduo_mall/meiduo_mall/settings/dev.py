@@ -12,12 +12,9 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'hf354&@8#s)2$c38_oj0bd!5^gxa=9!*7v*(-d*ma*&70ufy++'
@@ -28,15 +25,18 @@ DEBUG = True
 # 指定可以通过哪些主机(ip,域名)访问后台服务器(django应用，django视图)
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'api.meiduo.site']
 
+
+# 添加导包路径
 # import sys
 # sys.path.append('/home/python/code/gz07/meiduo/meiduo_mall/meiduo_mall/apps')
-
 import sys
 sys.path.insert(0,os.path.join(BASE_DIR,'apps')) # 添加导包路径，添加到列表的第一位
 
+
+# 注册应用
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
+    'django.contrib.admin', # 后台管理模块
+    'django.contrib.auth', # 用户认证模块
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -44,11 +44,13 @@ INSTALLED_APPS = [
 
     'corsheaders',
     # 'meiduo_mall.apps.users.apps.UsersConfig',
-    'users', # 添加了导包路径后，只需要写ｕｓｅｒｓ
+    'users', # 添加了导包路径后，只需要写user
     'rest_framework', # 注册 django rest framwork 框架应用
-#     'django.contrib.admin',  # 后台管理模块
-#     'django.contrib.auth',   # 用户认证模块
+    'oauth'
 ]
+
+
+# 中建键
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -60,8 +62,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
 ROOT_URLCONF = 'meiduo_mall.urls'
 
+
+# 模板
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -82,9 +87,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'meiduo_mall.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-
+# 数据库配置
 DATABASES = {
     # 'default': {
     #     'ENGINE': 'django.db.backends.sqlite3',
@@ -102,9 +105,7 @@ DATABASES = {
 }
 
 
-# Password validation
-# https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
-
+# 密码验证
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -120,14 +121,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/1.11/topics/i18n/
-
-# LANGUAGE_CODE = 'en-us'
 LANGUAGE_CODE = 'zh-hans' # 设置中文
 
-# TIME_ZONE = 'UTC'
 TIME_ZONE = 'Asia/Shanghai' # 设置时区
 
 USE_I18N = True
@@ -137,8 +132,6 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
 # 静态资源访问路径
 STATIC_URL = '/static/'
 
@@ -221,8 +214,8 @@ LOGGING = {
     }
 }
 
-# 建议：项目开发完成再添加进来
-# DRF相关配置
+
+# DRF相关配置 # 建议：项目开发完成再添加进来
 REST_FRAMEWORK = {
 #     # 异常处理
 #     # 'EXCEPTION_HANDLER': 'meiduo_mall.meiduo_mall.utils.exceptions.custom_exception_handler',
@@ -232,6 +225,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
     ),
 }
+
+
 # jwt认证配置
 import datetime
 JWT_AUTH = {
@@ -241,9 +236,11 @@ JWT_AUTH = {
     'JWT_RESPONSE_PAYLOAD_HANDLER':'users.utils.jwt_response_payload_handler',
 }
 
+
 # 在项目配置文件中，指定使用自定义的用户模型类
 # AUTH_USER_MODEL = 'users.modeles.User' # 错误的写法
 AUTH_USER_MODEL = 'users.User'
+
 
 # 允许跨域访问
 CORS_ORIGIN_WHITELIST = (
@@ -254,6 +251,7 @@ CORS_ORIGIN_WHITELIST = (
 )
 # 指定在跨域访问中，后台是否支持cookie操作
 CORS_ALLOW_CREDENTIALS = True
+
 
 # 扩展登录接口: 手机号也可以登陆, 配置之后就不在使用源码里的默认的只能用户名登陆的方式了
 AUTHENTICATION_BACKENDS = [
