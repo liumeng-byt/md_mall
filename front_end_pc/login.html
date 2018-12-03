@@ -26,7 +26,7 @@
 							<input type="password" @blur="check_pwd" v-model="password" class="pass_input" placeholder="请输入密码">
 							<div v-if="error_pwd" class="pwd_error">{{ error_pwd_message }}</div>
 							<div class="more_input clearfix">
-								<input type="checkbox" name="">
+								<input type="checkbox" name="" v-model="remember">
 								<label>记住登录</label>
 								<a href="/find_password.html">忘记密码</a>
 							</div>

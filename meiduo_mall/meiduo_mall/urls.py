@@ -19,6 +19,6 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('users.urls')),
-    url(r'^', include('verifications.urls')),
-    url(r'^oauth/', include('oauth.urls')),# QQ登录
+    url(r'^', include('verifications.urls')), # 短信验证码
+    url(r'^oauth/', include('oauth.urls')),# QQ登录的模块
 ]
