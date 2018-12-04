@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from django.views import View
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_jwt.views import ObtainJSONWebToken
 
+from users import serializers
 from users.models import User
 from users.serializers import CreateUserSerializer
 
@@ -95,3 +97,51 @@ class MyObtainJSONWebToken(ObtainJSONWebToken):
     # 要返回的token,user_id,username,被定义users/utils.py,不在使用继承的类的返回值
 
     # 用手机号也可以登录的方法定义在users/utils.py,不在使用继承的类的只允许用户名登录
+
+
+# 用户中心展示信息 url(r'^user/$', views.UserDetailView.as_view()),
+class UserDetailView(RetrieveAPIView):
+    """用户中心展示信息"""
+    # 指定序列化器
+    serializer_class = serializers.UserDetailSerializer
+
+    # 设置权限,登陆后才能调用此接口
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        # 返回当前登陆用户对象
+        return self.request.user
+
+
+# 修改邮箱
+class EmailView(UpdateAPIView):
+    """"""
+    # 设置权限,登陆后才能调用此接口
+    permission_classes = [IsAuthenticated]
+    serializer_class = serializers.EmailSerializer
+
+    # 重写GenericAPIView的方法，指定要修改的是哪一条用户数据
+    def get_object(self):
+        return self.request.user
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

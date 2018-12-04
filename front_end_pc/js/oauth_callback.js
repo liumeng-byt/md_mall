@@ -19,8 +19,32 @@ var vm = new Vue({
         openid: ''    // 加密后的openid
     },
 
-    mounted: function () {
-        // 从路径中获取qq重定向返回的code
+     mounted: function () {
+        // 获取QQ登录成功后返回的code参数
+        let code = this.get_query_string('code');
+        // alert(code);
+        axios.get(this.host + '/oauth/qq/user/?code=' + code)
+            .then(response => {
+                if (response.data.token){// 用户已绑定,并登录成功
+                    // 保存登录成功的jwt
+                    sessionStorage.clear();
+                    localStorage.clear();
+                    localStorage.user_id = response.data.user;
+                    localStorage.username = response.data.username;
+                    localStorage.token = response.data.token;
+
+                    // 登录成功后需要根据state将用户引导到登录成功后的页面
+                    var state = this.get_query_string('state');
+                    location.href = state
+
+                }else {// 用户未绑定
+                    this.openid = response.data.openid;
+                    this.is_show_waiting = false //显示绑定界面
+                    // alert(this.openid);
+                    console.log(this.openid)
+
+                }
+            })
 
     },
 
@@ -121,6 +145,36 @@ var vm = new Vue({
             this.check_pwd();
             this.check_phone();
             this.check_sms_code();
+             if(this.error_password == false
+               && this.error_phone == false
+               && this.error_sms_code == false) {
+                // 发请求绑定openid和美多用户
+                axios.post(this.host + '/oauth/qq/user/', {
+                        password: this.password,
+                        mobile: this.mobile,
+                        sms_code: this.sms_code,
+                        openid: this.openid
+                    })
+                    .then(response => {
+                    	// 绑定成功，即登录成功，需要记录用户登录状态
+                        sessionStorage.clear();
+                        localStorage.clear();
+                        localStorage.token = response.data.token;
+                        localStorage.user_id = response.data.user_id;
+                        localStorage.username = response.data.username;
+
+                    	// QQ登录成功，跳转到指定界面
+                        location.href = this.get_query_string('state');
+                    })
+                    .catch(error=> {
+                        if (error.response.status == 400) {
+                            this.error_sms_code_message = error.response.data.message;
+                            this.error_sms_code = true;
+                        } else {
+                            console.log(error.response.data);
+                        }
+                    })
+            }
 
         }
     }

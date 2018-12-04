@@ -19,6 +19,10 @@ urlpatterns = [
 
     # 注册用户
     url(r'^users/$',views.CreateUserView.as_view()),
+    # 用户中心展示数据
+    url(r'^user/$', views.UserDetailView.as_view()),
+    # 修改邮箱
+    url(r'^email/$', views.EmailView.as_view()),
 
     # 登录接口(使用第三方包的视图)
     # url(r'^authorizations/$',obtain_jwt_token) # 直接调用jwt里的登陆视图,但是只返回token一个值

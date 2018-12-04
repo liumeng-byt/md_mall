@@ -4,6 +4,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer
 
+from celery_tasks.email.tasks import send_verify_email
 from users.models import User
 
 # 注册用户的序列化器
@@ -100,3 +101,44 @@ class CreateUserSerializer(ModelSerializer):
         user.token = token  # 生成的jwt 序列化返回
 
         return user
+
+
+# 用户中心详细信息序列化器
+class UserDetailSerializer(serializers.ModelSerializer):
+    """ 用户详细信息序列化器
+    仅用于序列化把User里的五个字段展示在用户中心,不做校验
+    """
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'mobile', 'email', 'email_active')
+
+
+
+# 修改邮箱序列化器
+class EmailSerializer(serializers.ModelSerializer):
+    """"""
+    class Meta:
+        model = User # 指明参照哪个模型类
+        fields = ('id','email')  # 指定序列化器中包含哪些字段
+        extra_kwargs = {   # 添加或修改原有的选项参数
+            'email':{'required':True}  # 请求时,需要传递此参数
+        }
+
+    # 修改一条用户数据
+    # instance: 要修改的用户对象
+    def update(self, instance, validated_data): # instance一个用户对象
+        # 校验
+
+        # 保存(修改)邮箱
+        email = validated_data['email']
+        instance.email = email
+        instance.save()
+
+        # 生成邮箱激活链接
+        verify_url = instance.generate_verify_email_url()
+        print(verify_url)
+
+        # 发送激活链接到用户邮箱
+        send_verify_email.delay(email, verify_url) # email用户邮箱,verify_url邮箱激活链接
+
+        return instance
