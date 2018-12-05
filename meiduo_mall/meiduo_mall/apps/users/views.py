@@ -1,5 +1,8 @@
+from django.conf import settings
 from django.shortcuts import render
 from django.views import View
+from itsdangerous import BadData
+from itsdangerous import TimedJSONWebSignatureSerializer
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -125,7 +128,40 @@ class EmailView(UpdateAPIView):
         return self.request.user
 
 
+# 激活邮箱view
+# GET /email/verification/?token=xxx
+class VerifyEmailView(APIView):
+    """激活用户邮箱"""
+    def get(self, request):
+        # 1. 获取请求参数： token
+        token = request.query_params.get('token')  #  jwt字符串
 
+        # 2. 校验token合法性
+        # {'user_id': 'xx', 'email': 'xxx'}
+        if not token:
+            return Response({'message': '缺少token参数'}, status=400)
+        try:
+            s = TimedJSONWebSignatureSerializer(settings.SECRET_KEY)
+            dict_data = s.loads(token)  # 返回字典
+        except:
+            return Response({'message': 'token无效'}, status=400)
+
+        # 3. 从token中获取： user_id, email
+        user_id = dict_data.get('user_id')
+        email = dict_data.get('email')
+
+        # 4. 查询出要激活的用户对象
+        try:
+            user = User.objects.get(id=user_id, email=email)
+        except:
+            return Response({'message': '用户不存在'}, status=400)
+
+        # 5. 修改用户对象的激活字段为true:  email_active=True
+        user.email_active = True
+        user.save()
+
+        # 6. 响应数据： {'message': 'ok'}
+        return Response({'message': 'ok'})
 
 
 

@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     # 'meiduo_mall.apps.users.apps.UsersConfig',
     'users', # 添加了导包路径后，只需要写user
     'rest_framework', # 注册 django rest framwork 框架应用
-    'oauth'
+    'oauth',
+    'areas',
 ]
 
 
@@ -143,6 +144,7 @@ STATICFILES_DIRS = [
 
 # caches缓存，配置使用redis数据库
 CACHES = {
+    # 接口数据缓存: 省份城市数据
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379/0",
@@ -271,3 +273,13 @@ EMAIL_PORT = 25 # 默认端口
 EMAIL_HOST_USER = 'yls_lm@163.com' #发送邮件的邮箱
 EMAIL_HOST_PASSWORD = 'lm272049690' #在邮箱中设置的客户端授权密码
 EMAIL_FROM = '美多官方邮箱<yls_lm@163.com>' #收件人看到的发件人
+
+
+# drf扩展: 缓存配置, 获取省份和区县接口使用到
+REST_FRAMEWORK_EXTENSIONS = {
+    # 缓存时间(1小时)
+    'DEFAULT_CACHE_RESPONSE_TIMEOUT': 60 * 60,
+    # 缓存到哪里 (caches中配置的default)
+    'DEFAULT_USE_CACHE': 'default',
+}
+

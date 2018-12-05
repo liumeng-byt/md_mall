@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from itsdangerous import TimedJSONWebSignatureSerializer
 
+from utils.models import BaseModel
+
 
 class User(AbstractUser):
     """用户模型类"""
@@ -11,6 +13,10 @@ class User(AbstractUser):
 
     # 用户中心需要展示
     email_active = models.BooleanField(default=False, verbose_name='邮箱验证状态')
+
+    # 新增字段： 在用户表新增用户的默认地址
+    default_address = models.ForeignKey('Address', related_name='users',
+                                        null=True, blank=True, on_delete=models.SET_NULL, verbose_name='默认地址')
 
     class Meta:
         db_table = 'tb_users'
@@ -26,3 +32,5 @@ class User(AbstractUser):
         verify_url = 'http://www.meiduo.site:8080/success_verify_email.html?token=' + token
 
         return verify_url
+
+

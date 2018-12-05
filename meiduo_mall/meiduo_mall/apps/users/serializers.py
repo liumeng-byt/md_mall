@@ -127,8 +127,6 @@ class EmailSerializer(serializers.ModelSerializer):
     # 修改一条用户数据
     # instance: 要修改的用户对象
     def update(self, instance, validated_data): # instance一个用户对象
-        # 校验
-
         # 保存(修改)邮箱
         email = validated_data['email']
         instance.email = email
@@ -136,7 +134,7 @@ class EmailSerializer(serializers.ModelSerializer):
 
         # 生成邮箱激活链接
         verify_url = instance.generate_verify_email_url()
-        print(verify_url)
+        # print(verify_url)
 
         # 发送激活链接到用户邮箱
         send_verify_email.delay(email, verify_url) # email用户邮箱,verify_url邮箱激活链接

@@ -7,18 +7,22 @@ var vm = new Vue({
         username: sessionStorage.username || localStorage.username,
         is_show_edit: false,   // 是否显示编辑地址窗口
 
-         provinces: [],      // 省份
-        cities: [],			    // 城市
-        districts: [],          // 区县
+        provinces: [],      // 省份
+        cities: [],			// 城市
+        districts: [],      // 区县
+
         addresses: [],      // 用户所有的地址
 
         limit: '',
         default_address_id: '',
+
         form_address: {     // 新增或编辑地址时,用户录入的字段信息
             receiver: '',
+
             province_id: '',
             city_id: '',
             district_id: '',
+
             place: '',
             mobile: '',
             tel: '',
@@ -37,16 +41,69 @@ var vm = new Vue({
 
 	// 初始化界面数据
     mounted: function () {
+  		// 查询所有的省份
+        axios.get(this.host + '/areas/')
+            .then(response => {
+                this.provinces = response.data;
+            })
+            .catch(error => {
 
+                alert(error.response.data);
+            });
+
+        // 获取地址数据的请求
+        axios.get(this.host + '/addresses/', {
+                headers: {
+                    'Authorization': 'JWT ' + this.token
+                }
+            })
+            .then(response => {
+                this.addresses = response.data.addresses;
+                this.limit = response.data.limit;
+                this.default_address_id = response.data.default_address_id;
+            })
+            .catch(error => {
+                status = error.response.status;
+                if (status == 401 || status == 403) {
+                    location.href = '/login.html?next=/user_center_site.html';
+                } else {
+                    alert(error.response.data);
+                }
+            })
     },
 
-	// 侦听属性	
+    // 监听属性：监听vue的一个变量，每当这个变量发生改变，都执行特定的操作
     watch: {
+    	// 省份改变，获取城市
+        'form_address.province_id': function () {
+            if (this.form_address.province_id) { // province_id 不为空
+                axios.get(this.host + '/areas/' + this.form_address.province_id + '/')
+                    .then(response => {
+                        this.cities = response.data.subs;
+                    })
+                    .catch(error => {
+                        console.log(error.response.data);
+                        this.cities = [];
+                    });
+            }
+        },
 
+        // 城市改变，获取区县
+        'form_address.city_id': function () {
+            if (this.form_address.city_id) { // city_id 不为空
+                axios.get(this.host + '/areas/' + this.form_address.city_id + '/')
+                    .then(response => {
+                        this.districts = response.data.subs;
+                    })
+                    .catch(error => {
+                        console.log(error.response.data);
+                        this.districts = [];
+                    });
+            }
+        }
     },
 
     methods: {
-
         // 退出
         logout: function () {
             sessionStorage.clear();
@@ -120,9 +177,33 @@ var vm = new Vue({
             }
         },
 
-        // 保存地址
-        save_address: function () {
+         save_address: function(){
+            if (this.error_receiver || this.error_place
+                || this.error_mobile || this.error_email
+                || !this.form_address.province_id
+                || !this.form_address.city_id
+                || !this.form_address.district_id ) {
+                alert('信息填写有误');
+                return
+            }
 
+            // 设置地址标题
+            this.form_address.title = this.form_address.receiver;
+
+            // 新增地址
+            axios.post(this.host + '/addresses/', this.form_address, {
+                headers: {
+                    'Authorization': 'JWT ' + this.token
+                }
+            })
+            .then(response => {
+                // 将新地址添加到数组的头部（作为第一个元素）
+                this.addresses.splice(0, 0, response.data);
+                this.is_show_edit = false;  // 隐藏弹出窗口
+            })
+            .catch(error => {
+                console.log(error.response.data);
+            })
         },
 
         // 删除地址

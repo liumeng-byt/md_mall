@@ -18,7 +18,8 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^', include('users.urls')),
+    url(r'^', include('users.urls')), # 用户
+    url(r'^', include('areas.urls')), # 区域
     url(r'^', include('verifications.urls')), # 短信验证码
-    url(r'^oauth/', include('oauth.urls')),# QQ登录的模块
+    url(r'^oauth/', include('oauth.urls')), # QQ登录的模块
 ]
