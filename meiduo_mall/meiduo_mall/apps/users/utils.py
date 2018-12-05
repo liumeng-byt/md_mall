@@ -1,10 +1,10 @@
-# 因为要返回多个参数token,user_id,username,所以需要重新定义一个函数,创建后需要把源代码里的配置名拿过来重新配置后,系统就会执行定义的这个函数,配置项在dev.py里:JWT_AUTH
 from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
 
 from users.models import User
 
 
+# 因为要返回多个参数token,user_id,username,所以需要重新定义一个函数,创建后需要把源代码里的配置名拿过来重新配置后,系统就会执行定义的这个函数,配置项在dev.py里:JWT_AUTH
 def jwt_response_payload_handler(token, user=None, request=None):
     return {
         'token': token,

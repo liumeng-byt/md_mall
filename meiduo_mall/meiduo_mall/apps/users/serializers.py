@@ -5,7 +5,8 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer
 
 from celery_tasks.email.tasks import send_verify_email
-from users.models import User
+from users.models import User, Address
+
 
 # 注册用户的序列化器
 class CreateUserSerializer(ModelSerializer):
@@ -140,3 +141,36 @@ class EmailSerializer(serializers.ModelSerializer):
         send_verify_email.delay(email, verify_url) # email用户邮箱,verify_url邮箱激活链接
 
         return instance
+
+
+# 用户地址序列化器
+class UserAddressSerializer(serializers.ModelSerializer):
+    """
+    用户地址序列化器: 序列化 + 校验参数
+    """
+    province = serializers.StringRelatedField(read_only=True)  # 默认返回关联对象的主键
+    city = serializers.StringRelatedField(read_only=True)
+    district = serializers.StringRelatedField(read_only=True)
+
+    # 新增地址时补充的字段(可读可写)
+    province_id = serializers.IntegerField(label='省ID', required=True)
+    city_id = serializers.IntegerField(label='市ID', required=True)
+    district_id = serializers.IntegerField(label='区ID', required=True)
+
+    def validate_mobile(self, value):
+        if not re.match(r'^1[3-9]\d{9}$', value):
+            raise serializers.ValidationError('手机号格式错误')
+        return value
+
+    def create(self, validated_data):
+        """ 保存 """
+        # 补充一个字段： 收件地址所属用户, 再保存到数据库表中
+        validated_data['user'] = self.context['request'].user  # 获取当前登录用户对象
+
+        print('self.context', self.context)
+        return super().create(validated_data)
+
+    class Meta:
+        model = Address
+        # 新增地址，不需要用户传递user到服务器，服务器可以自动获取到当前登录用户对象
+        exclude = ('user', 'is_deleted', 'create_time', 'update_time')

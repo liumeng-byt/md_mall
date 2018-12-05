@@ -3,10 +3,12 @@ from django.shortcuts import render
 from django.views import View
 from itsdangerous import BadData
 from itsdangerous import TimedJSONWebSignatureSerializer
+from rest_framework import mixins
 from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import GenericViewSet
 from rest_framework_jwt.views import ObtainJSONWebToken
 
 from users import serializers
@@ -162,7 +164,6 @@ class VerifyEmailView(APIView):
 
         # 6. 响应数据： {'message': 'ok'}
         return Response({'message': 'ok'})
-
 
 
 
