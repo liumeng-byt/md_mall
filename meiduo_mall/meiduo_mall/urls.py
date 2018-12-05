@@ -22,4 +22,6 @@ urlpatterns = [
     url(r'^', include('areas.urls')), # 区域
     url(r'^', include('verifications.urls')), # 短信验证码
     url(r'^oauth/', include('oauth.urls')), # QQ登录的模块
+    url(r'^', include('goods.urls')), # 商品
+    url(r'^', include('contents.urls')), # 广告
 ]

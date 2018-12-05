@@ -158,6 +158,7 @@ class UserAddressSerializer(serializers.ModelSerializer):
     district_id = serializers.IntegerField(label='区ID', required=True)
 
     def validate_mobile(self, value):
+        # 验证手机号
         if not re.match(r'^1[3-9]\d{9}$', value):
             raise serializers.ValidationError('手机号格式错误')
         return value
@@ -174,3 +175,10 @@ class UserAddressSerializer(serializers.ModelSerializer):
         model = Address
         # 新增地址，不需要用户传递user到服务器，服务器可以自动获取到当前登录用户对象
         exclude = ('user', 'is_deleted', 'create_time', 'update_time')
+
+
+class AddressTitleSerializer(serializers.ModelSerializer):
+    """地址标题"""
+    class Meta:
+        model = Address
+        fields = ('title',)

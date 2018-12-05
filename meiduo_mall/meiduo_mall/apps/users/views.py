@@ -170,8 +170,16 @@ class AddressViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, GenericView
         return Response({'message': 'OK'}, status=status.HTTP_200_OK)
 
 
- 
-
+    # put /addresses/pk/title/
+    # 需要请求体参数 title
+    @action(methods=['put'], detail=True)  # 为true的时候回根据传进来的pk值自动生成对应查找的路由
+    def title(self, request, pk=None):
+        """修改标题"""
+        address = self.get_object()
+        serializer = serializers.AddressTitleSerializer(instance=address, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
 
 

@@ -46,8 +46,10 @@ INSTALLED_APPS = [
     # 'meiduo_mall.apps.users.apps.UsersConfig',
     'users', # 添加了导包路径后，只需要写user
     'rest_framework', # 注册 django rest framwork 框架应用
-    'oauth',
-    'areas',
+    'oauth',  #
+    'areas', # 地区
+    'goods', # 商品
+    'contents', # 广告内容应用
 ]
 
 
