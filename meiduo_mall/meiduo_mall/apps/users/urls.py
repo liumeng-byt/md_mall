@@ -5,15 +5,13 @@ from django.conf.urls import url
 # 添加了导包路径后可以这样写，这里虽然写的正确，但是系统会画红线，需要吧apps导包路径设置为　Source Root 目录
 from rest_framework.routers import DefaultRouter
 
-from areas.views import  AddressViewSet
+
 from users import views
-from users.views import UsernameCountView, MyObtainJSONWebToken
+from users.views import UsernameCountView, MyObtainJSONWebToken, AddressViewSet
 from rest_framework_jwt.views import obtain_jwt_token
 
 
 urlpatterns = [
-    url(r'^test/$', views.TestView.as_view()),
-    url(r'^test2/$', views.TestView2.as_view()),
 
     # 判断用户名是否存在
     url(r'^usernames/(?P<username>\w{3,20})/count/$', UsernameCountView.as_view()),
@@ -36,6 +34,7 @@ urlpatterns = [
 
 ]
 
+# 用户地址管理的试图集(增 删 查 改)
 router = DefaultRouter()
 router.register(r'addresses', AddressViewSet, base_name='addresses')
 urlpatterns += router.urls

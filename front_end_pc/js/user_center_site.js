@@ -54,6 +54,7 @@ var vm = new Vue({
         // 获取地址数据的请求
         axios.get(this.host + '/addresses/', {
                 headers: {
+                    // 登录状态
                     'Authorization': 'JWT ' + this.token
                 }
             })
@@ -208,12 +209,35 @@ var vm = new Vue({
 
         // 删除地址
         del_address: function (index) {
-
+            axios.delete(this.host + '/addresses/' + this.addresses[index].id + '/',{
+                headers: {
+                    'Authorization': 'JWT ' + this.token
+                }
+            })
+                .then(response => {
+                    // 从数组中移除地址
+                    this.addresses.splice(index, 1);
+                    // console.log(response.data)
+                })
+                .catch(error => {
+                    console.log(error.response.data);
+                })
         },
 
         // 设置默认地址
         set_default: function (index) {
-
+            axios.put(this.host + '/addresses/' + this.addresses[index].id + '/status/',{},{
+                headers:{
+                    'Authorization': 'JWT ' + this.token
+                },
+                responseType:'json'
+            })
+                .then(response => {
+                    this.default_address_id = this.addresses[index].id;
+                })
+                .catch(error =>{
+                    console.log(error.response.data);
+                })
         },
 
         // 展示编辑标题
