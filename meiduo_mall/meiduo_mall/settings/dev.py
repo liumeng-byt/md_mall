@@ -285,3 +285,5 @@ REST_FRAMEWORK_EXTENSIONS = {
     'DEFAULT_USE_CACHE': 'default',
 }
 
+# 指定使用自定义的文件存储类
+DEFAULT_FILE_STORAGE = 'utils.fastdfs.storage.FdfsStorage'
