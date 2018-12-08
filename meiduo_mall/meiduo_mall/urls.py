@@ -24,4 +24,5 @@ urlpatterns = [
     url(r'^oauth/', include('oauth.urls')), # QQ登录的模块
     url(r'^', include('goods.urls')), # 商品
     url(r'^', include('contents.urls')), # 广告
+    url(r'^ckeditor/', include('ckeditor_uploader.urls')), # 富文本编辑器
 ]

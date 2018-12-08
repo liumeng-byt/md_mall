@@ -16,4 +16,4 @@ celery_app = Celery('meiduo', broker='redis://127.0.0.1:6379/15',
 # celery_app.config_from_object('celery_tasks.config')
 
 # 扫描指定的包下面的任务函数
-celery_app.autodiscover_tasks(['celery_tasks.sms', 'celery_tasks.email'])
+celery_app.autodiscover_tasks(['celery_tasks.sms', 'celery_tasks.email','celery_task.html'])

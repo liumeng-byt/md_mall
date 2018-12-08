@@ -151,7 +151,6 @@ class UserAddressSerializer(serializers.ModelSerializer):
     province = serializers.StringRelatedField(read_only=True)  # 默认返回关联对象的主键
     city = serializers.StringRelatedField(read_only=True)
     district = serializers.StringRelatedField(read_only=True)
-
     # 新增地址时补充的字段(可读可写)
     province_id = serializers.IntegerField(label='省ID', required=True)
     city_id = serializers.IntegerField(label='市ID', required=True)
@@ -167,7 +166,6 @@ class UserAddressSerializer(serializers.ModelSerializer):
         """ 保存 """
         # 补充一个字段： 收件地址所属用户, 再保存到数据库表中
         validated_data['user'] = self.context['request'].user  # 获取当前登录用户对象
-
         print('self.context', self.context)
         return super().create(validated_data)
 

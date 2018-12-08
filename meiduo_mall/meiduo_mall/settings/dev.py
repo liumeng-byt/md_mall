@@ -47,9 +47,13 @@ INSTALLED_APPS = [
     'users', # 添加了导包路径后，只需要写user
     'rest_framework', # 注册 django rest framwork 框架应用
     'oauth',  #
-    'areas', # 地区
-    'goods', # 商品
+    'areas',   # 地区
+    'goods',   # 商品
     'contents', # 广告内容应用
+    'ckeditor',  # 富文本编辑器
+    'ckeditor_uploader',  # 富文本编辑器上传图片模块
+    'django_crontab', # 定时任务
+    'django_filters', # 商品列表数据的过滤
 ]
 
 
@@ -228,6 +232,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',# 管理后台使用
         'rest_framework.authentication.BasicAuthentication',
     ),
+        'DEFAULT_PAGINATION_CLASS':'meiduo_mall.utils.paginations.MyPageNumberPagination', # 分页设置
 }
 
 
@@ -286,4 +291,35 @@ REST_FRAMEWORK_EXTENSIONS = {
 }
 
 # 指定使用自定义的文件存储类
-DEFAULT_FILE_STORAGE = 'utils.fastdfs.storage.FdfsStorage'
+DEFAULT_FILE_STORAGE = 'meiduo_mall.utils.fastdfs.storage.FdfsStorage'
+
+
+# 富文本编辑器ckeditor配置
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',  # 工具条功能
+        'height': 300,  # 编辑器高度
+        # 'width': 300,  # 编辑器宽
+    },
+}
+CKEDITOR_UPLOAD_PATH = ''  # 上传图片保存路径，使用了FastDFS，所以此处设为''
+
+
+# FastDFS 客户端配置文件相对路径
+FDFS_CLIENT_CONF = 'meiduo_mall/utils/fastdfs/client.conf'
+# FastDFS服务器图片地址
+FDFS_URL = 'http://image.meiduo.site:8888/'
+
+
+# 生成的静态html文件保存的目录
+GENERATED_STATIC_HTML_FILES_DIR = os.path.join(os.path.dirname(os.path.dirname(BASE_DIR)), 'front_end_pc')
+
+
+# 配置定时任务
+CRONJOBS = [
+    ('*/1 * * * *', 'contents.crons.generate_static_index_html','>> /home/python/PycharmProjects/meiduo/meiduo_mall/meiduo_mall/logs/crontab.log'),
+# 参数1：定时时间设置，表示每隔3分钟执行一次
+# 参数2：要定义执行的函数
+# 说明：日志文本使用绝对路径，会自动创建
+]
+
