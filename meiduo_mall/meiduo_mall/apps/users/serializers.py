@@ -75,7 +75,7 @@ class CreateUserSerializer(ModelSerializer):
         # 获取用户传递过来的短信验证码
         sms_code = attrs.get('sms_code')
         # 比较是否相等
-        print(sms_code, real_sms_code)
+
         if real_sms_code.decode() != sms_code:
             raise ValidationError('短信验证码不正确')
 
@@ -166,7 +166,7 @@ class UserAddressSerializer(serializers.ModelSerializer):
         """ 保存 """
         # 补充一个字段： 收件地址所属用户, 再保存到数据库表中
         validated_data['user'] = self.context['request'].user  # 获取当前登录用户对象
-        print('self.context', self.context)
+        # print('self.context', self.context)
         return super().create(validated_data)
 
     class Meta:

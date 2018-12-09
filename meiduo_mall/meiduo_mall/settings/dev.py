@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'ckeditor_uploader',  # 富文本编辑器上传图片模块
     'django_crontab', # 定时任务
     'django_filters', # 商品列表数据的过滤
+    'haystack', # Haystack千草堆
 ]
 
 
@@ -223,10 +224,10 @@ LOGGING = {
 }
 
 
-# DRF相关配置 # 建议：项目开发完成再添加进来
+# DRFkj相关配置 # 建议：项目开发完成再添加进来
 REST_FRAMEWORK = {
-#     # 异常处理
-#     # 'EXCEPTION_HANDLER': 'meiduo_mall.meiduo_mall.utils.exceptions.custom_exception_handler',
+     # 异常处理
+     # 'EXCEPTION_HANDLER': 'meiduo_mall.meiduo_mall.utils.exceptions.custom_exception_handler',
         'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',# jwt认证
         'rest_framework.authentication.SessionAuthentication',# 管理后台使用
@@ -323,3 +324,16 @@ CRONJOBS = [
 # 说明：日志文本使用绝对路径，会自动创建
 ]
 
+
+# 配置haystack全文检索框架
+HAYSTACK_CONNECTIONS = {
+        'default': {
+            'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+            # 此处为elasticsearch运行的服务器ip地址，端口号默认为9200
+            'URL': 'http://192.168.234.140:9200/',
+            # 指定elasticsearch建立的索引库的名称
+            'INDEX_NAME': 'meiduo',
+        },
+    }
+# 当添加、修改、删除数据时，自动更新索引
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
