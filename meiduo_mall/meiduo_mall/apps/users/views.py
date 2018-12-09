@@ -15,7 +15,7 @@ from rest_framework_jwt.views import ObtainJSONWebToken
 
 from users import serializers
 from users.models import User
-from users.serializers import CreateUserSerializer, UserAddressSerializer
+from users.serializers import CreateUserSerializer, UserAddressSerializer, AddBrowseHistorySerializer
 
 
 # 判断用户名是否存在
@@ -182,5 +182,9 @@ class AddressViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, GenericView
         return Response(serializer.data)
 
 
-
-
+# 保存浏览历史
+# POST /browse_histories/
+class BrowseHistoryView(CreateAPIView):
+    """用户浏览历史记录"""
+    permission_classes = [IsAuthenticated] # 登陆权限
+    serializer_class = AddBrowseHistorySerializer

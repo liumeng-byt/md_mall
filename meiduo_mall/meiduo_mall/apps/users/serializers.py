@@ -1,10 +1,12 @@
 import re
 
+from django_redis import get_redis_connection
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer
 
 from celery_tasks.email.tasks import send_verify_email
+from goods.models import SKU
 from users.models import User, Address
 
 
@@ -175,8 +177,55 @@ class UserAddressSerializer(serializers.ModelSerializer):
         exclude = ('user', 'is_deleted', 'create_time', 'update_time')
 
 
+# 地址标题
 class AddressTitleSerializer(serializers.ModelSerializer):
     """地址标题"""
     class Meta:
         model = Address
         fields = ('title',)
+
+
+# 添加浏览历史序列化器
+class AddBrowseHistorySerializer(serializers.Serializer):
+    """保存用户浏览记录
+        1. 校验商品id
+        2. 保存商品id到redis
+        3. 序列化
+    """
+    sku_id = serializers.IntegerField(label='商品sku编号',min_value=1)
+
+    def validate_sku_id(self,value):
+        # 检验sku_id是否存在
+        try:
+            SKU.objects.get(id=value)
+        except SKU.DoesNotExist:
+            raise serializers.ValidationError('该商品不存在')
+        return value
+
+    def create(self, validated_data):
+        """保存sku_id到redis中"""
+        # 序列化器用于GenericAPIView时，会有一个字典类型的属性叫context，里面包含了request对象
+        # history_1 =  [2, 1, 3]
+
+        # 获取sku_id
+        sku_id = validated_data.get('sku_id')
+
+        # 获取登陆用户对象
+        user_id = self.context.get('request').user.id
+
+        # 获取StrictRedis对象
+        strictredis = get_redis_connection('history')  # dev/history
+
+        # 删除商品id
+        #  删除全部b：  lrem name 0 b
+        strictredis.lrem('history_%s' % user_id,0,sku_id)
+
+        # 把商品id添加到列表左侧
+        # 左侧插入：  lpush name liumeng
+        strictredis.lpush('history_%s' % user_id,sku_id)
+
+        # 截取列表,控制最多值保存6个元素
+        strictredis.ltrim('history_%s' % user_id,0,5)
+
+        # 响应:{"sku_id":1}
+        return validated_data

@@ -159,9 +159,10 @@ CACHES = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
+    # 保存 session 库
     "session": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://127.0.0.1:6379/1", # session 数据保存在1号库
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -169,11 +170,19 @@ CACHES = {
     # 保存短信验证码
     "sms_codes":{
         "BACKEND":"django_redis.cache.RedisCache",
-        "LOCATION":"redis://127.0.0.1:6379/2",
+        "LOCATION":"redis://127.0.0.1:6379/2",  # 短信验证码保存在2号redis库
         "OPTIONS":{
             "CLIENT_CLASS":"django_redis.client.DefaultClient",
         }
-    }
+    },
+    # 保存商品浏览历史记录
+    "history": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/3",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
 }
 
 # 保存session数据到Redis中，主要是为了给Admin站点使用

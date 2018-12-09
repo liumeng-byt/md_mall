@@ -7,7 +7,7 @@ from goods.models import SKU
 class SKUIndex(indexes.SearchIndex,indexes.Indexable):
     """SKU索引类"""
 
-    # use_template=True表示后续通过模板来指明该字段的索引值可以由哪些数据库模型类字段组成
+    # use_template=True表示后续通过模板来指明该字段的索引值可以由哪些数据库模型类字段组成,如:{{ object.name }}\n{{ object.caption }}\n{{ object.id }}
     # text名字固定,它声明document = True，表示组合字段,表名该字段是主要进行关键字查询的字段
     text = indexes.CharField(document=True,use_template=True)
 
@@ -19,9 +19,10 @@ class SKUIndex(indexes.SearchIndex,indexes.Indexable):
     comments = indexes.IntegerField(model_attr='comments')
 
     def get_model(self):
-        """返回建立索引的模型类"""
+        """返回建立索引的模型类,针对商品表生成索引库"""
         return SKU
 
     def index_queryset(self, using=None):
-        """返回建立索引的数据查询集"""
-        return self.get_model().objects.filter(is_launched=True) # 是否上架销售
+        """返回建立索引的数据查询集,需要根据数据库表的哪些数据来创建索引"""
+        # return self.get_model().objects.filter(is_launched=True) # 是否上架销售
+        return SKU.objects.filter(is_launched=True) # 是否上架
