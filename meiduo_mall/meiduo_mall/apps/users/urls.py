@@ -31,8 +31,8 @@ urlpatterns = [
     # 登录接口(使用jwt的视图),因为只返回token一个值,所以需要自定义视图函数返回token,user_id,username
     url(r'authorizations/$',MyObtainJSONWebToken.as_view()),
 
-    # 用户浏览历史记录
-    url(r'browse_history/$',BrowseHistoryView.as_view()),
+    # 用户保存和浏览历史记录
+    url(r'browse_histories/$',BrowseHistoryView.as_view()),
 
 
 

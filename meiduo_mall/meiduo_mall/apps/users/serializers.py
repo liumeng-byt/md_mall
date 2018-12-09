@@ -224,8 +224,8 @@ class AddBrowseHistorySerializer(serializers.Serializer):
         # 左侧插入：  lpush name liumeng
         strictredis.lpush('history_%s' % user_id,sku_id)
 
-        # 截取列表,控制最多值保存6个元素
-        strictredis.ltrim('history_%s' % user_id,0,5)
+        # 截取列表,控制最多值保存10个元素
+        strictredis.ltrim('history_%s' % user_id,0,9)
 
         # 响应:{"sku_id":1}
         return validated_data

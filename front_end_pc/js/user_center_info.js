@@ -22,7 +22,7 @@ var vm = new Vue({
             'Authorization': 'JWT ' + this.token
         },
     };
-	axios.get(this.host + '/user/', config)
+	    axios.get(this.host + '/user/', config)
             .then(response => { // 显示用户数据
                 this.user_id = response.data.id;
                 this.username = response.data.username;
@@ -36,7 +36,21 @@ var vm = new Vue({
                     location.href = '/login.html?next=/user_center_info.html';
                 }
             });
-},
+	     // 补充请求用户浏览历史
+        axios.get(this.host + '/browse_histories/', {
+                headers: { // 登录
+                    'Authorization': 'JWT ' + this.token
+                },
+                responseType: 'json'
+            })
+            .then(response => {
+                this.histories = response.data;
+                for (var i = 0; i < this.histories.length; i++) {
+                    this.histories[i].url = '/goods/'
+                        + this.histories[i].id + '.html';
+                }
+            })
+    },
 
     methods: {
         // 退出
@@ -79,5 +93,3 @@ var vm = new Vue({
         }
     }
 });
-
-
