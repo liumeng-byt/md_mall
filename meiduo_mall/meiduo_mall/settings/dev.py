@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'goods',  # 商品应用
     'contents',  # 广告内容应用
     'oauth',  #
+    'orders', # 订单商品应用
 
 
     'ckeditor',  # 富文本编辑器
