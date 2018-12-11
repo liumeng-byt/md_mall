@@ -189,8 +189,10 @@ class AddressTitleSerializer(serializers.ModelSerializer):
 class AddBrowseHistorySerializer(serializers.Serializer):
     """保存用户浏览记录
         1. 校验商品id
-        2. 保存商品id到redis
-        3. 序列化
+        2. 通过检验后获取商品id和用户id
+        3. 获取redis对象
+        4. 保存商品id到redis
+        5. 序列化
     """
     sku_id = serializers.IntegerField(label='商品sku编号',min_value=1)
 

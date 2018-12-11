@@ -41,20 +41,23 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'corsheaders',
     # 'meiduo_mall.apps.users.apps.UsersConfig',
     'users', # 添加了导包路径后，只需要写user
-    'rest_framework', # 注册 django rest framwork 框架应用
+    'carts',  # 购物车应用
+    'areas',  # 地区应用
+    'goods',  # 商品应用
+    'contents',  # 广告内容应用
     'oauth',  #
-    'areas',   # 地区
-    'goods',   # 商品
-    'contents', # 广告内容应用
+
+
     'ckeditor',  # 富文本编辑器
     'ckeditor_uploader',  # 富文本编辑器上传图片模块
     'django_crontab', # 定时任务
     'django_filters', # 商品列表数据的过滤
     'haystack', # Haystack千草堆
+    'rest_framework',  # 注册 django rest framwork 框架应用
+
 ]
 
 
@@ -179,6 +182,14 @@ CACHES = {
     "history": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379/3",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
+    # 保存购物车商品到4号redis库
+    "cart": {       # 保存购物车商品
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/4",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }

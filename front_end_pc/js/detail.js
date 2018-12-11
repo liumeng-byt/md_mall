@@ -88,8 +88,26 @@ var vm = new Vue({
         },
 
         // 添加购物车
-        add_cart: function () {
-
+         add_cart: function() {
+            let data = {
+                sku_id: parseInt(this.sku_id),
+                count: this.sku_count
+            };
+            let config = {
+                headers: { // 通过请求头往服务器传递登录状态
+                    'Authorization': 'JWT ' + this.token
+                },
+                withCredentials: true   // 注意： 跨域请求传递cookie给服务器
+            };
+            axios.post(this.host+'/cart/', data, config)
+                .then(response => {
+                    alert('添加购物车成功');
+                    this.cart_total_count += response.data.count;
+                })
+                .catch(error => {
+                    alert('添加购物车失败');
+                    console.log(error.response.data);
+                })
         },
 
         // 获取购物车数据
