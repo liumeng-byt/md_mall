@@ -50,7 +50,7 @@ var vm = new Vue({
                 axios.post(this.host+'/authorizations/', {
                         username: this.username,
                         password: this.password
-                    })
+                    },{withCredentials:true}) //跨域请求传递cookie给服务器(合并购物车处用到)
                     .then(response => {
                         // 使用浏览器本地存储保存token
                         sessionStorage.clear();

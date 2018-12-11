@@ -23,7 +23,8 @@ var vm = new Vue({
         // 获取QQ登录成功后返回的code参数
         let code = this.get_query_string('code');
         // alert(code);
-        axios.get(this.host + '/oauth/qq/user/?code=' + code)
+        axios.get(this.host + '/oauth/qq/user/?code=' + code,
+             { withCredentials: true })// 跨域请求传递cookie给服务器
             .then(response => {
                 if (response.data.token){// 用户已绑定,并登录成功
                     // 保存登录成功的jwt
@@ -154,7 +155,7 @@ var vm = new Vue({
                         mobile: this.mobile,
                         sms_code: this.sms_code,
                         openid: this.openid
-                    })
+                    },{ withCredentials: true })   // 跨域请求传递cookie给服务器)
                     .then(response => {
                     	// 绑定成功，即登录成功，需要记录用户登录状态
                         sessionStorage.clear();

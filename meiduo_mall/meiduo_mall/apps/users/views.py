@@ -14,6 +14,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 from rest_framework_jwt.views import ObtainJSONWebToken
 
+from carts.utils import merge_cart_cookie_to_redis
 from goods.models import SKU
 from goods.serializers import SKUSerializer
 from users import serializers
@@ -40,11 +41,24 @@ class CreateUserView(CreateAPIView):
 
 # 登陆接口
 class MyObtainJSONWebToken(ObtainJSONWebToken):
-    pass
+    # pass
     # 登录接口(使用jwt的视图),因为只返回token一个值,所以需要自定义视图函数返回token,user_id,username
     # 要返回的token,user_id,username,被定义users/utils.py,不在使用继承的类的返回值
-
     # 用手机号也可以登录的方法定义在users/utils.py,不在使用继承的类的只允许用户名登录
+
+    # 该方法用于登陆成功后调用(apps/carts/utils/)把cookie和redis的数据合并到购物车
+    def post(self, request, *args, **kwargs):
+        # 调用父类的方法,获取drf jwt扩展默认的认证用户处理结果
+        response = super().post(request,*args,**kwargs)
+
+        # 仿照drf jwt扩展对于用户登录的认证方式，判断用户是否认证登录成功
+        serializer = self.get_serializer(data = request.data)
+        # 若果用户登陆认证成功,则合并购物车
+        if serializer.is_valid():
+            user = serializer.validated_data.get('user')
+            response = merge_cart_cookie_to_redis(request,response,user)
+        return response
+
 
 
 # 用户中心展示信息 url(r'^user/$', views.UserDetailView.as_view()),
