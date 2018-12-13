@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'contents',  # 广告内容应用
     'oauth',  #
     'orders', # 订单商品应用
+    'payment', # 支付
 
 
     'ckeditor',  # 富文本编辑器
@@ -340,7 +341,7 @@ GENERATED_STATIC_HTML_FILES_DIR = os.path.join(os.path.dirname(os.path.dirname(B
 # 配置定时任务
 CRONJOBS = [
     ('*/1 * * * *', 'contents.crons.generate_static_index_html','>> /home/python/PycharmProjects/meiduo/meiduo_mall/meiduo_mall/logs/crontab.log'),
-# 参数1：定时时间设置，表示每隔3分钟执行一次
+# 参数1：定时时间设置，表示每隔30分钟执行一次
 # 参数2：要定义执行的函数
 # 说明：日志文本使用绝对路径，会自动创建
 ]
@@ -358,3 +359,10 @@ HAYSTACK_CONNECTIONS = {
     }
 # 当添加、修改、删除数据时，自动更新索引
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+
+
+# 支付宝支付
+ALIPAY_APPID = "2016092200571301"   # 需要修改成自己的沙箱应用的id(项目上线改成正式应用的id)
+ALIPAY_URL = "https://openapi.alipaydev.com/gateway.do"    # 测试环境
+# ALIPAY_URL = "https://openapi.alipay.com/gateway.do"     # 正式环境
+ALIPAY_DEBUG = True

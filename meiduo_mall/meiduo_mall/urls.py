@@ -26,5 +26,6 @@ urlpatterns = [
     url(r'^', include('contents.urls')), # 广告
     url(r'^', include('carts.urls')), # 购物车
     url(r'^', include('orders.urls')), # 购物车
+    url(r'^', include('payment.urls')), # 支付宝支付
     url(r'^ckeditor/', include('ckeditor_uploader.urls')), # 富文本编辑器
 ]
