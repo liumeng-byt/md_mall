@@ -52,6 +52,10 @@ INSTALLED_APPS = [
     'orders', # 订单商品应用
     'payment', # 支付
 
+    'xadmin',  # xadmin 后台管理模块
+    'crispy_forms',
+    'reversion',
+
 
     'ckeditor',  # 富文本编辑器
     'ckeditor_uploader',  # 富文本编辑器上传图片模块
@@ -59,6 +63,7 @@ INSTALLED_APPS = [
     'django_filters', # 商品列表数据的过滤
     'haystack', # Haystack千草堆
     'rest_framework',  # 注册 django rest framwork 框架应用
+
 
 ]
 
@@ -106,6 +111,7 @@ DATABASES = {
     #     'ENGINE': 'django.db.backends.sqlite3',
     #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     # }
+        # 主服务器
         'default': {
             'ENGINE': 'django.db.backends.mysql',
             'HOST': '127.0.0.1',
@@ -113,7 +119,17 @@ DATABASES = {
             'USER': 'root',
             'PASSWORD': 'mysql',
             'NAME': 'meiduo_mall'
-        }
+        },
+
+        # 从服务器
+        'slave': {
+            'ENGINE': 'django.db.backends.mysql',
+            'HOST': '127.0.0.1',
+            'PORT': 8306,
+            'USER': 'root',
+            'PASSWORD': 'mysql',
+            'NAME': 'meiduo_mall'
+    }
 
 }
 
@@ -279,7 +295,10 @@ CORS_ORIGIN_WHITELIST = (
     '127.0.0.1:8080',
     'localhost:8080',
     'www.meiduo.site:8080',
-    'api.meiduo.site:8000'
+    'api.meiduo.site:8000',
+    'www.meiduo.site',  # 添加
+    '192.168.234.140',
+
 )
 # 指定在跨域访问中，后台是否支持cookie操作
 CORS_ALLOW_CREDENTIALS = True
@@ -340,7 +359,7 @@ GENERATED_STATIC_HTML_FILES_DIR = os.path.join(os.path.dirname(os.path.dirname(B
 
 # 配置定时任务
 CRONJOBS = [
-    ('*/1 * * * *', 'contents.crons.generate_static_index_html','>> /home/python/PycharmProjects/meiduo/meiduo_mall/meiduo_mall/logs/crontab.log'),
+    ('*/30 * * * *', 'contents.crons.generate_static_index_html','>> /home/python/PycharmProjects/meiduo/meiduo_mall/meiduo_mall/logs/crontab.log'),
 # 参数1：定时时间设置，表示每隔30分钟执行一次
 # 参数2：要定义执行的函数
 # 说明：日志文本使用绝对路径，会自动创建
@@ -366,3 +385,10 @@ ALIPAY_APPID = "2016092200571301"   # 需要修改成自己的沙箱应用的id(
 ALIPAY_URL = "https://openapi.alipaydev.com/gateway.do"    # 测试环境
 # ALIPAY_URL = "https://openapi.alipay.com/gateway.do"     # 正式环境
 ALIPAY_DEBUG = True
+
+# 配置读写分离(主从配置)
+DATABASE_ROUTERS = ['meiduo_mall.utils.db_router.MasterSlaveDBRouter']
+
+
+# nginx.收集静态文件之后存放的目录
+STATIC_ROOT = os.path.join(os.path.dirname(os.path.dirname(BASE_DIR)), 'front_end_pc/static')
